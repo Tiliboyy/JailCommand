@@ -42,15 +42,6 @@ namespace JailCommand.Commands
 			{
 				var ply = Player.Get(plyser);
 				if(ply.IsServer) continue;
-				Log.Info(ply.Nickname);
-				if (arguments.At(0).Contains("@steam"))
-				{
-					if (ply.ReferenceHub.PlayerId == int.Parse(arguments.At(0)))
-					{
-						player = Player.Get(ply.ReferenceHub);
-						break;
-					}
-				}
 				if (int.TryParse(arguments.At(0), out var id))
 				{
 					if(ply.ReferenceHub.PlayerId != id) continue;
