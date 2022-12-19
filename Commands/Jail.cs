@@ -52,6 +52,10 @@ namespace JailCommand.Commands
 					{
 						player.ReferenceHub.inventory.ServerAddItem(variable);
 					}
+					foreach (var variable in e.SAmmo)
+					{
+						player.ReferenceHub.inventory.ServerAddAmmo(variable.Key, variable.Value);
+					}
 					
 
 				});
@@ -67,14 +71,15 @@ namespace JailCommand.Commands
 			{
 				items.Add(variable.Value.ItemTypeId);
 			}
-			var ammo = new List<ItemType>();
+
+			var ammo = new Dictionary<ItemType, ushort>();
 
 			foreach (var variable in player.ReferenceHub.inventory.UserInventory.ReserveAmmo)
 			{
-				items.Add(variable.Key);
+				ammo.Add(variable.Key, variable.Value);
 			}
 			
-			JailedPlayer ply = new() { SRole = player.Role, SPosition = player.Position, SItems = items };
+			JailedPlayer ply = new() { SRole = player.Role, SPosition = player.Position, SItems = items , SAmmo = ammo};
 
 			players.Add(player, ply);
 			player.Role = RoleTypeId.Tutorial;
@@ -93,8 +98,11 @@ namespace JailCommand.Commands
 	public struct JailedPlayer
 	{
 		public List<ItemType> SItems { get; set; }
+		
+		public Dictionary<ItemType, ushort> SAmmo { get; set; }
 		public Vector3 SPosition { get; set; }
 		public RoleTypeId SRole { get; set; }
+		
 
 	}
 }
