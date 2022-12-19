@@ -30,16 +30,42 @@ namespace JailCommand.Commands
 
 		public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
 		{
-			Player player;
 			if (arguments.Count != 1)
 			{
 				response = "Usage: Jail <Username>";
 				return true;
 			}
-			else
+			
+
+			Player player = null;
+			foreach (var plyser in ReferenceHub.AllHubs.ToList())
 			{
-				player = Player.GetByName(arguments.At(0));
+				var ply = Player.Get(plyser);
+				if(ply.IsServer) continue;
+				Log.Info(ply.Nickname);
+				if (arguments.At(0).Contains("@steam"))
+				{
+					if (ply.ReferenceHub.PlayerId == int.Parse(arguments.At(0)))
+					{
+						player = Player.Get(ply.ReferenceHub);
+						break;
+					}
+				}
+				if (int.TryParse(arguments.At(0), out var id))
+				{
+					if(ply.ReferenceHub.PlayerId != id) continue;
+					player = Player.Get(ply.ReferenceHub);
+					break;
+
+				}
 			}
+			if (player == null)
+			{
+				response = "Player not found";
+				return true;
+			}
+			Log.Info(player.Nickname);
+
 
 			if (players.ContainsKey(player))
 			{
@@ -54,7 +80,8 @@ namespace JailCommand.Commands
 					}
 					foreach (var variable in e.SAmmo)
 					{
-						player.ReferenceHub.inventory.ServerAddAmmo(variable.Key, variable.Value);
+						player.AddAmmo(variable.Key, variable.Value);
+
 					}
 					
 
@@ -79,9 +106,9 @@ namespace JailCommand.Commands
 				ammo.Add(variable.Key, variable.Value);
 			}
 			
-			JailedPlayer ply = new() { SRole = player.Role, SPosition = player.Position, SItems = items , SAmmo = ammo};
+			JailedPlayer plyer = new() { SRole = player.Role, SPosition = player.Position, SItems = items , SAmmo = ammo};
 
-			players.Add(player, ply);
+			players.Add(player, plyer);
 			player.Role = RoleTypeId.Tutorial;
 			player.Position = new Vector3(39, 1014, -32);
 			response = "Player " + player.Nickname + " jailed";
@@ -94,6 +121,8 @@ namespace JailCommand.Commands
 
 		}
 	}
+
+
 
 	public struct JailedPlayer
 	{
