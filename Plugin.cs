@@ -4,7 +4,7 @@
 	using PluginAPI.Core.Attributes;
 	using PluginAPI.Events;
 
-	public class MainClass
+	public class Plugin
 	{
 		[PluginEntryPoint(
 			"JailCommand",
