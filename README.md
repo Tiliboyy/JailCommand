@@ -1,3 +1,3 @@
 # JailCommand
-Adds a Jail command
-|Credits to Dimenzio for helping me|
+Adds a Jail command<br />
+Credits to Dimenzio for helping me<br />
